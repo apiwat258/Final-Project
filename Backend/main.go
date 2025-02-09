@@ -1,6 +1,7 @@
 package main
 
 import (
+	"finalyearproject/Backend/api/controllers" // ✅ เพิ่ม import controllers
 	"finalyearproject/Backend/api/routes"
 	"finalyearproject/Backend/database"
 	"finalyearproject/Backend/middleware"
@@ -13,25 +14,26 @@ import (
 func main() {
 	app := fiber.New()
 
-	// เพิ่มมิดเดิลแวร์ CORS
+	// ✅ อนุญาตให้ Frontend เชื่อมต่อ API
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://0.0.0.0:8081", // โดเมนของ frontend
-		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		AllowOrigins: "http://0.0.0.0:8081", // ✅ ตรงกับ Frontend
+		AllowMethods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
 	}))
 
-	// เชื่อมต่อกับฐานข้อมูลและทำการ Migrate
+	// ✅ เชื่อมต่อฐานข้อมูล
 	database.Connect()
-	database.DB.AutoMigrate(&models.User{}, &models.Farmer{})
+	database.DB.AutoMigrate(&models.User{}, &models.Farmer{}, &models.Certification{})
 
-	// ให้บริการไฟล์สแตติกจากไดเรกทอรี frontend
+	// ✅ ให้บริการไฟล์ Static (Frontend)
 	app.Static("/", "./frontend")
 
-	// กำหนดเส้นทางสำหรับ API
-	app.Post("/api/register", middleware.Register)
+	// ✅ กำหนด Route API
+	app.Post("/api/register", middleware.Register)                    // ลงทะเบียนผู้ใช้
+	app.Post("/api/uploadCertificate", controllers.UploadCertificate) // ✅ แก้ไขให้ใช้ `controllers.UploadCertificate`
 
-	// ✅ เรียกใช้ SetupRoutes() โดยส่ง *fiber.App
+	// ✅ เรียกใช้ SetupRoutes() เพื่อกำหนดเส้นทาง API อื่นๆ
 	routes.SetupRoutes(app)
 
-	// เริ่มเซิร์ฟเวอร์ที่พอร์ต 8080
+	// ✅ เริ่มเซิร์ฟเวอร์
 	app.Listen(":8080")
 }

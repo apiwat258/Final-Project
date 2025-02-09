@@ -282,244 +282,140 @@
         <!-- Author: FormBold Team -->
         <!-- Learn More: https://formbold.com -->
         <div class="formbold-form-wrapper">
-          <form action="https://formbold.com/s/FORM_ID" method="POST">
+          <form id="retailer-form">
             <div class="formbold-mb-3">
                 <label for="company_name" class="formbold-form-label"> Company Name / Entrepreneur Name </label>
-                <input
-                  type="text"
-                  name="company_name"
-                  id="company_name"
-                  placeholder="Enter Company Name"
-                  class="formbold-form-input"
-                />
-              </div>
+                <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name" class="formbold-form-input" />
+            </div>
+
             <div class="formbold-input-wrapp formbold-mb-3">
-              <label for="firstname" class="formbold-form-label"> Name </label>
-      
-              <div>
-                <input
-                  type="text"
-                  name="firstname"
-                  id="firstname"
-                  placeholder="First name"
-                  class="formbold-form-input"
-                />
-      
-                <input
-                  type="text"
-                  name="lastname"
-                  id="lastname"
-                  placeholder="Last name"
-                  class="formbold-form-input"
-                />
-              </div>
-            </div>
-      
-            <div class="formbold-mb-3">
-              <label for="email" class="formbold-form-label"> Email </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="example@email.com"
-                class="formbold-form-input"
-              />
-            </div>
-      
-            <div class="formbold-mb-3">
-              <label for="address" class="formbold-form-label"> Address </label>
-      
-              <input
-                type="text"
-                name="address"
-                id="address"
-                placeholder="Street address"
-                class="formbold-form-input formbold-mb-3"
-              />
-              <input
-                type="text"
-                name="address2"
-                id="address2"
-                placeholder="Street address line 2"
-                class="formbold-form-input"
-              />
-            </div>
-      
-            <div class="formbold-mb-3 formbold-input-wrapp">
-              <label for="phone" class="formbold-form-label"> Phone </label>
-      
-              <div>
-                <input
-                  type="text"
-                  name="areacode"
-                  id="areacode"
-                  placeholder="Area code"
-                  class="formbold-form-input formbold-w-45"
-                />
-      
-                <input
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  placeholder="Phone number"
-                  class="formbold-form-input"
-                />
-              </div>
-            </div>
-      
-            <div class="formbold-input-flex">
-              <div>
-                <label for="post" class="formbold-form-label"> Post/Zip code </label>
-                <input
-                  type="text"
-                  name="post"
-                  id="post"
-                  placeholder="ex:10540"
-                  class="formbold-form-input"
-                />
-              </div>
-              <div>
-                <label for="city" class="formbold-form-label"> City </label>
-                <select class="formbold-form-input" name="occupation" id="occupation">
-                    <option value="">Select Province</option>
-                    <option value="Bangkok">Bangkok</option>
-                    <option value="Amnat Charoen">Amnat Charoen</option>
-                    <option value="Ang Thong">Ang Thong</option>
-                    <option value="Bueng Kan">Bueng Kan</option>
-                    <option value="Buriram">Buriram</option>
-                    <option value="Chachoengsao">Chachoengsao</option>
-                    <option value="Chai Nat">Chai Nat</option>
-                    <option value="Chaiyaphum">Chaiyaphum</option>
-                    <option value="Chanthaburi">Chanthaburi</option>
-                    <option value="Chiang Mai">Chiang Mai</option>
-                    <option value="Chiang Rai">Chiang Rai</option>
-                    <option value="Chonburi">Chonburi</option>
-                    <option value="Chumphon">Chumphon</option>
-                    <option value="Kalasin">Kalasin</option>
-                    <option value="Kamphaeng Phet">Kamphaeng Phet</option>
-                    <option value="Kanchanaburi">Kanchanaburi</option>
-                    <option value="Khon Kaen">Khon Kaen</option>
-                    <option value="Krabi">Krabi</option>
-                    <option value="Lampang">Lampang</option>
-                    <option value="Lamphun">Lamphun</option>
-                    <option value="Loei">Loei</option>
-                    <option value="Lopburi">Lopburi</option>
-                    <option value="Mae Hong Son">Mae Hong Son</option>
-                    <option value="Maha Sarakham">Maha Sarakham</option>
-                    <option value="Mukdahan">Mukdahan</option>
-                    <option value="Nakhon Nayok">Nakhon Nayok</option>
-                    <option value="Nakhon Pathom">Nakhon Pathom</option>
-                    <option value="Nakhon Phanom">Nakhon Phanom</option>
-                    <option value="Nakhon Ratchasima">Nakhon Ratchasima</option>
-                    <option value="Nakhon Sawan">Nakhon Sawan</option>
-                    <option value="Nakhon Si Thammarat">Nakhon Si Thammarat</option>
-                    <option value="Nan">Nan</option>
-                    <option value="Narathiwat">Narathiwat</option>
-                    <option value="Nong Bua Lam Phu">Nong Bua Lam Phu</option>
-                    <option value="Nong Khai">Nong Khai</option>
-                    <option value="Nonthaburi">Nonthaburi</option>
-                    <option value="Pathum Thani">Pathum Thani</option>
-                    <option value="Pattani">Pattani</option>
-                    <option value="Phang Nga">Phang Nga</option>
-                    <option value="Phatthalung">Phatthalung</option>
-                    <option value="Phayao">Phayao</option>
-                    <option value="Phetchabun">Phetchabun</option>
-                    <option value="Phetchaburi">Phetchaburi</option>
-                    <option value="Phichit">Phichit</option>
-                    <option value="Phitsanulok">Phitsanulok</option>
-                    <option value="Phrae">Phrae</option>
-                    <option value="Phuket">Phuket</option>
-                    <option value="Prachinburi">Prachinburi</option>
-                    <option value="Prachuap Khiri Khan">Prachuap Khiri Khan</option>
-                    <option value="Ranong">Ranong</option>
-                    <option value="Ratchaburi">Ratchaburi</option>
-                    <option value="Rayong">Rayong</option>
-                    <option value="Roi Et">Roi Et</option>
-                    <option value="Sa Kaeo">Sa Kaeo</option>
-                    <option value="Sakon Nakhon">Sakon Nakhon</option>
-                    <option value="Samut Prakan">Samut Prakan</option>
-                    <option value="Samut Sakhon">Samut Sakhon</option>
-                    <option value="Samut Songkhram">Samut Songkhram</option>
-                    <option value="Saraburi">Saraburi</option>
-                    <option value="Satun">Satun</option>
-                    <option value="Sing Buri">Sing Buri</option>
-                    <option value="Sisaket">Sisaket</option>
-                    <option value="Songkhla">Songkhla</option>
-                    <option value="Sukhothai">Sukhothai</option>
-                    <option value="Suphan Buri">Suphan Buri</option>
-                    <option value="Surat Thani">Surat Thani</option>
-                    <option value="Surin">Surin</option>
-                    <option value="Tak">Tak</option>
-                    <option value="Trang">Trang</option>
-                    <option value="Trat">Trat</option>
-                    <option value="Ubon Ratchathani">Ubon Ratchathani</option>
-                    <option value="Udon Thani">Udon Thani</option>
-                    <option value="Uthai Thani">Uthai Thani</option>
-                    <option value="Uttaradit">Uttaradit</option>
-                    <option value="Yala">Yala</option>
-                    <option value="Yasothon">Yasothon</option>
-                  </select>
-              </div>
-            </div>
-      
-            <div class="formbold-mb-3">
-              <label for="upload" class="formbold-form-label">
-                Upload Organic Certification
-              </label>
-              <input
-                type="file"
-                name="upload"
-                id="upload"
-                class="formbold-form-input formbold-form-file"
-              />
+                <label for="firstname" class="formbold-form-label"> Name </label>
+                <div>
+                    <input type="text" name="firstname" id="firstname" placeholder="First name" class="formbold-form-input" />
+                    <input type="text" name="lastname" id="lastname" placeholder="Last name" class="formbold-form-input" />
+                </div>
             </div>
 
             <div class="formbold-mb-3">
-                <label for="Location" class="formbold-form-label">
-                  Location Link
-                </label>
-                <input
-                  type="link"
-                  name="Location"
-                  id="Location"
-                  class="formbold-form-input"
-                />
-                <iframe id="googleMap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.013476711178!2d100.50176541533313!3d13.756331990349907!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e2993ddf5f4c7d%3A0x5c5cb2e518ba0a3c!2zQnVua3VtaW4gUGFsYWNlLCBCYW5na29rLCDguJrguKfguKPguLTguKI!5e0!3m2!1sen!2sth!4v1672922742475!5m2!1sen!2sth" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen class="custom-spacing"> </iframe>
-              </div>
-      
-            <div class="formbold-checkbox-wrapper">
-              <label for="supportCheckbox" class="formbold-checkbox-label">
-                <div class="formbold-relative">
-                  <input
-                    type="checkbox"
-                    id="supportCheckbox"
-                    class="formbold-input-checkbox"
-                  />
-                  <div class="formbold-checkbox-inner">
-                    <span class="formbold-opacity-0">
-                      <svg
-                        width="11"
-                        height="8"
-                        viewBox="0 0 11 8"
-                        class="formbold-stroke-current"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M8.81868 0.688604L4.16688 5.4878L2.05598 3.29507C1.70417 2.92271 1.1569 2.96409 0.805082 3.29507C0.453266 3.66742 0.492357 4.24663 0.805082 4.61898L3.30689 7.18407C3.54143 7.43231 3.85416 7.55642 4.16688 7.55642C4.47961 7.55642 4.79233 7.43231 5.02688 7.18407L10.0696 2.05389C10.4214 1.68154 10.4214 1.10233 10.0696 0.729976C9.71776 0.357624 9.17049 0.357625 8.81868 0.688604Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-                I agree to the defined
-                <a href="#"> terms, conditions, and policies</a>
-              </label>
+                <label for="email" class="formbold-form-label"> Email </label>
+                <input type="text" name="email" id="email" placeholder="example@email.com" class="formbold-form-input" readonly />
             </div>
-      
-            <button class="formbold-btn">Submit</button>
-          </form>
+
+            <div class="formbold-mb-3">
+                <label for="address" class="formbold-form-label"> Address </label>
+                <input type="text" name="address" id="address" placeholder="Street address" class="formbold-form-input formbold-mb-3" />
+                <input type="text" name="address2" id="address2" placeholder="Street address line 2" class="formbold-form-input" />
+            </div>
+
+            <div class="formbold-mb-3 formbold-input-wrapp">
+                <label for="phone" class="formbold-form-label"> Phone </label>
+                <div>
+                    <input type="text" name="areacode" id="areacode" placeholder="Area code" class="formbold-form-input formbold-w-45" />
+                    <input type="text" name="phone" id="phone" placeholder="Phone number" class="formbold-form-input" />
+                </div>
+            </div>
+
+            <div class="formbold-input-flex">
+                <div>
+                    <label for="post" class="formbold-form-label"> Post/Zip code </label>
+                    <input type="text" name="post" id="post" placeholder="ex:10540" class="formbold-form-input" />
+                </div>
+                <div>
+                    <label for="city" class="formbold-form-label"> City </label>
+                    <select class="formbold-form-input" name="city" id="city">
+                      <option value="">Select Province</option>
+                      <option value="Bangkok">Bangkok</option>
+                      <option value="Amnat Charoen">Amnat Charoen</option>
+                      <option value="Ang Thong">Ang Thong</option>
+                      <option value="Bueng Kan">Bueng Kan</option>
+                      <option value="Buriram">Buriram</option>
+                      <option value="Chachoengsao">Chachoengsao</option>
+                      <option value="Chai Nat">Chai Nat</option>
+                      <option value="Chaiyaphum">Chaiyaphum</option>
+                      <option value="Chanthaburi">Chanthaburi</option>
+                      <option value="Chiang Mai">Chiang Mai</option>
+                      <option value="Chiang Rai">Chiang Rai</option>
+                      <option value="Chonburi">Chonburi</option>
+                      <option value="Chumphon">Chumphon</option>
+                      <option value="Kalasin">Kalasin</option>
+                      <option value="Kamphaeng Phet">Kamphaeng Phet</option>
+                      <option value="Kanchanaburi">Kanchanaburi</option>
+                      <option value="Khon Kaen">Khon Kaen</option>
+                      <option value="Krabi">Krabi</option>
+                      <option value="Lampang">Lampang</option>
+                      <option value="Lamphun">Lamphun</option>
+                      <option value="Loei">Loei</option>
+                      <option value="Lopburi">Lopburi</option>
+                      <option value="Mae Hong Son">Mae Hong Son</option>
+                      <option value="Maha Sarakham">Maha Sarakham</option>
+                      <option value="Mukdahan">Mukdahan</option>
+                      <option value="Nakhon Nayok">Nakhon Nayok</option>
+                      <option value="Nakhon Pathom">Nakhon Pathom</option>
+                      <option value="Nakhon Phanom">Nakhon Phanom</option>
+                      <option value="Nakhon Ratchasima">Nakhon Ratchasima</option>
+                      <option value="Nakhon Sawan">Nakhon Sawan</option>
+                      <option value="Nakhon Si Thammarat">Nakhon Si Thammarat</option>
+                      <option value="Nan">Nan</option>
+                      <option value="Narathiwat">Narathiwat</option>
+                      <option value="Nong Bua Lam Phu">Nong Bua Lam Phu</option>
+                      <option value="Nong Khai">Nong Khai</option>
+                      <option value="Nonthaburi">Nonthaburi</option>
+                      <option value="Pathum Thani">Pathum Thani</option>
+                      <option value="Pattani">Pattani</option>
+                      <option value="Phang Nga">Phang Nga</option>
+                      <option value="Phatthalung">Phatthalung</option>
+                      <option value="Phayao">Phayao</option>
+                      <option value="Phetchabun">Phetchabun</option>
+                      <option value="Phetchaburi">Phetchaburi</option>
+                      <option value="Phichit">Phichit</option>
+                      <option value="Phitsanulok">Phitsanulok</option>
+                      <option value="Phrae">Phrae</option>
+                      <option value="Phuket">Phuket</option>
+                      <option value="Prachinburi">Prachinburi</option>
+                      <option value="Prachuap Khiri Khan">Prachuap Khiri Khan</option>
+                      <option value="Ranong">Ranong</option>
+                      <option value="Ratchaburi">Ratchaburi</option>
+                      <option value="Rayong">Rayong</option>
+                      <option value="Roi Et">Roi Et</option>
+                      <option value="Sa Kaeo">Sa Kaeo</option>
+                      <option value="Sakon Nakhon">Sakon Nakhon</option>
+                      <option value="Samut Prakan">Samut Prakan</option>
+                      <option value="Samut Sakhon">Samut Sakhon</option>
+                      <option value="Samut Songkhram">Samut Songkhram</option>
+                      <option value="Saraburi">Saraburi</option>
+                      <option value="Satun">Satun</option>
+                      <option value="Sing Buri">Sing Buri</option>
+                      <option value="Sisaket">Sisaket</option>
+                      <option value="Songkhla">Songkhla</option>
+                      <option value="Sukhothai">Sukhothai</option>
+                      <option value="Suphan Buri">Suphan Buri</option>
+                      <option value="Surat Thani">Surat Thani</option>
+                      <option value="Surin">Surin</option>
+                      <option value="Tak">Tak</option>
+                      <option value="Trang">Trang</option>
+                      <option value="Trat">Trat</option>
+                      <option value="Ubon Ratchathani">Ubon Ratchathani</option>
+                      <option value="Udon Thani">Udon Thani</option>
+                      <option value="Uthai Thani">Uthai Thani</option>
+                      <option value="Uttaradit">Uttaradit</option>
+                      <option value="Yala">Yala</option>
+                      <option value="Yasothon">Yasothon</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="formbold-mb-3">
+                <label for="upload_certification" class="formbold-form-label"> Upload Organic Certification </label>
+                <input type="file" name="upload_certification" id="upload_certification" class="formbold-form-input formbold-form-file" />
+            </div>
+
+            <div class="formbold-mb-3">
+                <label for="location_link" class="formbold-form-label"> Location Link </label>
+                <input type="text" name="location_link" id="location_link" class="formbold-form-input" />
+            </div>
+
+            <button class="formbold-btn" type="submit">Submit</button>
+        </form>
         </div>
       </div>
 

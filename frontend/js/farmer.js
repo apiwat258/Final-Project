@@ -13,6 +13,46 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error: Element with ID 'email' not found in DOM.");
     }
 
+    // ✅ อัปโหลดไฟล์ไปยัง IPFS เมื่อเลือกไฟล์
+    document.getElementById("upload_certification").addEventListener("change", async function (event) {
+        const file = event.target.files[0];
+        if (!file) {
+            alert("Please select a file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            console.log("📌 Uploading file to IPFS...");
+            const response = await fetch("http://127.0.0.1:8080/api/v1/uploadCertificate", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            console.log("✅ IPFS Upload Result:", result);
+
+            if (!response.ok || !result.cid) {
+                alert("❌ Failed to upload file to IPFS");
+                return;
+            }
+
+            const certificationCID = result.cid;  
+            console.log("✅ Certification CID:", certificationCID);
+
+            // ✅ เก็บ `CID` ไว้ใน localStorage
+            localStorage.setItem("certification_cid", certificationCID);
+            alert("File uploaded successfully! CID: " + certificationCID);
+
+        } catch (error) {
+            console.error("❌ Error uploading file:", error);
+            alert("An error occurred while uploading.");
+        }
+    });
+
+    // ✅ เมื่อกด Submit จะส่งทั้งข้อมูลฟาร์ม + CID ที่อัปโหลดไว้ไปยัง Backend
     const farmerForm = document.getElementById("farmer-form");
     if (farmerForm) {
         farmerForm.addEventListener("submit", async function (event) {
@@ -23,6 +63,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("User ID not found. Please register first.");
                 return;
             }
+
+            const certificationCID = localStorage.getItem("certification_cid"); // ✅ ดึง `CID` ที่อัปโหลดไว้ก่อนหน้า
+            console.log("✅ Certification CID from localStorage:", certificationCID);
 
             const farmerData = {
                 userid: userID,
@@ -36,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 phone: document.getElementById("phone").value,
                 post: document.getElementById("post").value,
                 city: document.getElementById("city").value, 
-                upload_certification: document.getElementById("upload_certification").value,
                 location_link: document.getElementById("location_link").value
             };
 
@@ -46,24 +88,51 @@ document.addEventListener("DOMContentLoaded", function () {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(farmerData)
                 });
-            
+
                 const textResponse = await response.text(); // ✅ รับ response เป็น string
                 console.log("Server Response:", textResponse); // ✅ Log response
-            
+
                 if (!response.ok) {
                     alert("Error: " + textResponse);
                     return;
                 }
-            
+
                 const data = JSON.parse(textResponse); // ✅ แปลงเป็น JSON ถ้าเป็นไปได้
                 alert("Farmer information saved successfully!");
+
+                // ✅ หลังจากบันทึกฟาร์มแล้ว → บันทึก Certification CID ลงตาราง organiccertification
+                if (certificationCID) {
+                    console.log("📌 Sending certification data to backend...");
+                    const certResponse = await fetch("http://127.0.0.1:8080/api/v1/createCertification", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            farmerid: data.farmer_id, // ✅ ใช้ farmer_id ที่เพิ่งบันทึก
+                            certificationtype: "Organic ACT",
+                            certificationcid: certificationCID,
+                            issued_date: "2025-02-07"
+                        })
+                    });
+
+                    const certData = await certResponse.json();
+                    console.log("✅ Certification Response:", certData);
+
+                    if (certResponse.ok) {
+                        alert("Certification saved successfully!");
+                    } else {
+                        console.error("❌ Failed to save certification:", certData.error);
+                        alert("Failed to save certification: " + certData.error);
+                    }
+                }
+
                 window.location.href = "index.html";
-            
+
             } catch (error) {
                 console.error("Error:", error);
                 alert("An error occurred while saving data.");
             }
-            
         });
     } else {
         console.error("Error: Form with ID 'farmer-form' not found in DOM.");
