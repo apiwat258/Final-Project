@@ -5,25 +5,24 @@ import (
 	"time"
 )
 
-type Farmer struct {
-	FarmerID     string         `gorm:"primaryKey;column:farmerid"`
-	UserID       string         `gorm:"column:userid;unique;not null"`
-	FarmerName   string         `gorm:"column:farmer_name;not null"`
+type Retailer struct {
+	RetailerID   string         `gorm:"primaryKey;column:retailerid"`
+	UserID       string         `gorm:"column:userid;unique"`
 	CompanyName  string         `gorm:"column:companyname;not null"`
 	Address      string         `gorm:"column:address;not null"`
 	City         string         `gorm:"column:city;not null"`
 	Province     string         `gorm:"column:province;not null"`
-	Country      string         `gorm:"column:country;default:Thailand"`
+	Country      string         `gorm:"column:country;default:Thailand;not null"`
 	PostCode     string         `gorm:"column:postcode;not null"`
-	Telephone    string         `gorm:"column:telephone;not null"`
+	Email        string         `gorm:"column:email;unique;not null"`
+	Telephone    sql.NullString `gorm:"column:telephone"`
 	LineID       sql.NullString `gorm:"column:lineid"`
 	Facebook     sql.NullString `gorm:"column:facebook"`
 	LocationLink sql.NullString `gorm:"column:location_link"`
 	CreatedOn    time.Time      `gorm:"column:createdon;autoCreateTime"`
-	Email        string         `gorm:"column:email;unique;not null"`
 }
 
-// ✅ บังคับ GORM ให้ใช้ตาราง `farmer` ที่มีอยู่
-func (Farmer) TableName() string {
-	return "farmer"
+// ✅ บังคับ GORM ให้ใช้ตาราง `retailer`
+func (Retailer) TableName() string {
+	return "retailer"
 }

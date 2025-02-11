@@ -7,12 +7,30 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	api := app.Group("/api/v1") // เปลี่ยนให้ทุก API ใช้ /api/v1
+	api := app.Group("/api/v1") // ✅ Ensure all routes use /api/v1
 
+	// ✅ Health Check and Root Route
 	api.Get("/", controllers.Welcome)
 	api.Get("/health", controllers.HealthCheck)
+
+	// ✅ User and Authentication Routes
+	api.Post("/register", controllers.RegisterUser) // ✅ Register a new user
+	api.Post("/login", controllers.LoginUser)       // ✅ User login
 	api.Post("/update-role", controllers.UpdateUserRole)
-	api.Post("/farmer", controllers.CreateFarmer)                     // ✅ เพิ่ม Route สำหรับ Farmer
-	api.Post("/createCertification", controllers.CreateCertification) // ✅ บันทึกใบรับรอง
-	api.Post("/uploadCertificate", controllers.UploadCertificate)     // ✅ อัปโหลดใบรับรองไป IPFS
+
+	// ✅ Farmer Routes
+	api.Post("/farmer", controllers.CreateFarmer)
+	api.Get("/farmer/:id", controllers.GetFarmerByID)
+	api.Put("/farmer/:id", controllers.UpdateFarmer)
+
+	// ✅ Certification Routes
+	api.Post("/createCertification", controllers.CreateCertification) // ✅ Save Certification
+	api.Post("/uploadCertificate", controllers.UploadCertificate)     // ✅ Upload Certification to IPFS
+	api.Get("/certification/:id", controllers.GetCertification)
+
+	// ✅ Blockchain Integration Routes
+	api.Post("/blockchain/rawmilk", controllers.RecordRawMilk)
+	api.Get("/blockchain/rawmilk/:id", controllers.GetRawMilkDetails)
+	api.Post("/blockchain/product", controllers.RecordProduct)
+	api.Get("/blockchain/product/:id", controllers.GetProductDetails)
 }

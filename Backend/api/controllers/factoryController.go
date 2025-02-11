@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateFarmer(c *fiber.Ctx) error {
-	type FarmerRequest struct {
+func CreateFactory(c *fiber.Ctx) error {
+	type FactoryRequest struct {
 		UserID       string  `json:"userid"`
 		CompanyName  string  `json:"company_name"`
 		FirstName    string  `json:"firstname"`
@@ -32,7 +32,7 @@ func CreateFarmer(c *fiber.Ctx) error {
 		LocationLink *string `json:"location_link"`
 	}
 
-	var req FarmerRequest
+	var req FactoryRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
@@ -42,24 +42,24 @@ func CreateFarmer(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User ID not found in users table"})
 	}
 
-	var existingFarmer models.Farmer
-	err := database.DB.Where("userid = ?", req.UserID).First(&existingFarmer).Error
+	var existingFactory models.Factory
+	err := database.DB.Where("userid = ?", req.UserID).First(&existingFactory).Error
 	if err == nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is already registered as a farmer"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is already registered as a factory"})
 	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 	}
 
-	if err := database.DB.Model(&models.User{}).Where("userid = ?", req.UserID).Update("role", "farmer").Error; err != nil {
+	if err := database.DB.Model(&models.User{}).Where("userid = ?", req.UserID).Update("role", "factory").Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update user role"})
 	}
 
 	var sequence int64
-	if err := database.DB.Raw("SELECT nextval('farmer_id_seq')").Scan(&sequence).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate farmer ID"})
+	if err := database.DB.Raw("SELECT nextval('dairyfactory_id_seq')").Scan(&sequence).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate factory ID"})
 	}
 	yearPrefix := time.Now().Format("06")
-	farmerID := fmt.Sprintf("%s%05d", yearPrefix, sequence)
+	factoryID := fmt.Sprintf("%s%05d", yearPrefix, sequence)
 
 	fullAddress := strings.TrimSpace(req.Address)
 	if req.Address2 != nil && strings.TrimSpace(*req.Address2) != "" {
@@ -105,10 +105,10 @@ func CreateFarmer(c *fiber.Ctx) error {
 		locationLink = sql.NullString{String: strings.TrimSpace(*req.LocationLink), Valid: true}
 	}
 
-	farmer := models.Farmer{
-		FarmerID:     farmerID,
+	factory := models.Factory{
+		FactoryID:    factoryID,
 		UserID:       req.UserID,
-		FarmerName:   strings.TrimSpace(req.FirstName) + " " + strings.TrimSpace(req.LastName),
+		FactoryName:  strings.TrimSpace(req.FirstName) + " " + strings.TrimSpace(req.LastName),
 		CompanyName:  companyName,
 		Address:      fullAddress,
 		City:         req.City,
@@ -123,43 +123,40 @@ func CreateFarmer(c *fiber.Ctx) error {
 		Email:        email.String,
 	}
 
-	if err := database.DB.Create(&farmer).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save farmer data"})
+	if err := database.DB.Create(&factory).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save factory data"})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer registered successfully", "farmer_id": farmer.FarmerID})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Factory registered successfully", "factory_id": factory.FactoryID})
 }
 
-func GetFarmerByID(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
+func GetFactoryByID(c *fiber.Ctx) error {
+	factoryID := c.Params("id")
 
-	var farmer models.Farmer
-	if err := database.DB.Where("farmerid = ?", farmerID).First(&farmer).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Farmer not found"})
+	var factory models.Factory
+	if err := database.DB.Where("factoryid = ?", factoryID).First(&factory).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Factory not found"})
 	}
 
-	return c.JSON(farmer)
+	return c.JSON(factory)
 }
 
-func UpdateFarmer(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-	var updates map[string]interface{}
-
-	if err := c.BodyParser(&updates); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data"})
+func DeleteFactory(c *fiber.Ctx) error {
+	factoryID := c.Params("id")
+	if err := database.DB.Where("factoryid = ?", factoryID).Delete(&models.Factory{}).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete factory"})
 	}
-
-	if err := database.DB.Model(&models.Farmer{}).Where("farmerid = ?", farmerID).Updates(updates).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update farmer data"})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer updated successfully"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Factory deleted successfully"})
 }
 
-func DeleteFarmer(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-	if err := database.DB.Where("farmerid = ?", farmerID).Delete(&models.Farmer{}).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete farmer"})
+func UpdateFactory(c *fiber.Ctx) error {
+	factoryID := c.Params("id")
+	updateData := make(map[string]interface{})
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer deleted successfully"})
+	if err := database.DB.Model(&models.Factory{}).Where("factoryid = ?", factoryID).Updates(updateData).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update factory"})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Factory updated successfully"})
 }

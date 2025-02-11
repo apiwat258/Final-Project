@@ -1,4 +1,3 @@
-// ✅ อัปโหลดไฟล์ไปยัง IPFS แล้วเก็บ CID ไว้
 document.getElementById("upload_certification").addEventListener("change", async function (event) {
     const file = event.target.files[0];
     if (!file) {
@@ -24,10 +23,10 @@ document.getElementById("upload_certification").addEventListener("change", async
             return;
         }
 
-        const certificationCID = result.cid;  
+        const certificationCID = result.cid;
         console.log("✅ Certification CID:", certificationCID);
 
-        // ✅ เก็บ `CID` ไว้ใน localStorage
+        // ✅ เก็บ `CID` ไว้ใน localStorage ใช้ร่วมกันทุกบทบาท
         localStorage.setItem("certification_cid", certificationCID);
         alert("File uploaded successfully! CID: " + certificationCID);
 

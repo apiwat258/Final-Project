@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateFarmer(c *fiber.Ctx) error {
-	type FarmerRequest struct {
+func CreateRetailer(c *fiber.Ctx) error {
+	type RetailerRequest struct {
 		UserID       string  `json:"userid"`
 		CompanyName  string  `json:"company_name"`
 		FirstName    string  `json:"firstname"`
@@ -32,7 +32,7 @@ func CreateFarmer(c *fiber.Ctx) error {
 		LocationLink *string `json:"location_link"`
 	}
 
-	var req FarmerRequest
+	var req RetailerRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
@@ -42,24 +42,24 @@ func CreateFarmer(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User ID not found in users table"})
 	}
 
-	var existingFarmer models.Farmer
-	err := database.DB.Where("userid = ?", req.UserID).First(&existingFarmer).Error
+	var existingRetailer models.Retailer
+	err := database.DB.Where("userid = ?", req.UserID).First(&existingRetailer).Error
 	if err == nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is already registered as a farmer"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is already registered as a retailer"})
 	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 	}
 
-	if err := database.DB.Model(&models.User{}).Where("userid = ?", req.UserID).Update("role", "farmer").Error; err != nil {
+	if err := database.DB.Model(&models.User{}).Where("userid = ?", req.UserID).Update("role", "retailer").Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update user role"})
 	}
 
 	var sequence int64
-	if err := database.DB.Raw("SELECT nextval('farmer_id_seq')").Scan(&sequence).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate farmer ID"})
+	if err := database.DB.Raw("SELECT nextval('retailer_id_seq')").Scan(&sequence).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate retailer ID"})
 	}
 	yearPrefix := time.Now().Format("06")
-	farmerID := fmt.Sprintf("%s%05d", yearPrefix, sequence)
+	retailerID := fmt.Sprintf("%s%05d", yearPrefix, sequence)
 
 	fullAddress := strings.TrimSpace(req.Address)
 	if req.Address2 != nil && strings.TrimSpace(*req.Address2) != "" {
@@ -105,61 +105,55 @@ func CreateFarmer(c *fiber.Ctx) error {
 		locationLink = sql.NullString{String: strings.TrimSpace(*req.LocationLink), Valid: true}
 	}
 
-	farmer := models.Farmer{
-		FarmerID:     farmerID,
+	retailer := models.Retailer{
+		RetailerID:   retailerID,
 		UserID:       req.UserID,
-		FarmerName:   strings.TrimSpace(req.FirstName) + " " + strings.TrimSpace(req.LastName),
 		CompanyName:  companyName,
 		Address:      fullAddress,
 		City:         req.City,
 		Province:     province,
 		Country:      req.Country,
 		PostCode:     req.PostCode,
+		Email:        email.String,
 		Telephone:    fullPhone,
 		LineID:       lineID,
 		Facebook:     facebook,
 		LocationLink: locationLink,
 		CreatedOn:    time.Now(),
-		Email:        email.String,
 	}
 
-	if err := database.DB.Create(&farmer).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save farmer data"})
+	if err := database.DB.Create(&retailer).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save retailer data"})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer registered successfully", "farmer_id": farmer.FarmerID})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Retailer registered successfully", "retailer_id": retailer.RetailerID})
 }
 
-func GetFarmerByID(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-
-	var farmer models.Farmer
-	if err := database.DB.Where("farmerid = ?", farmerID).First(&farmer).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Farmer not found"})
+func GetRetailerByID(c *fiber.Ctx) error {
+	retailerID := c.Params("id")
+	var retailer models.Retailer
+	if err := database.DB.Where("retailerid = ?", retailerID).First(&retailer).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Retailer not found"})
 	}
-
-	return c.JSON(farmer)
+	return c.JSON(retailer)
 }
 
-func UpdateFarmer(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-	var updates map[string]interface{}
-
-	if err := c.BodyParser(&updates); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data"})
+func UpdateRetailer(c *fiber.Ctx) error {
+	retailerID := c.Params("id")
+	updateData := make(map[string]interface{})
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
-
-	if err := database.DB.Model(&models.Farmer{}).Where("farmerid = ?", farmerID).Updates(updates).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update farmer data"})
+	if err := database.DB.Model(&models.Retailer{}).Where("retailerid = ?", retailerID).Updates(updateData).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update retailer"})
 	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer updated successfully"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Retailer updated successfully"})
 }
 
-func DeleteFarmer(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-	if err := database.DB.Where("farmerid = ?", farmerID).Delete(&models.Farmer{}).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete farmer"})
+func DeleteRetailer(c *fiber.Ctx) error {
+	retailerID := c.Params("id")
+	if err := database.DB.Where("retailerid = ?", retailerID).Delete(&models.Retailer{}).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete retailer"})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer deleted successfully"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Retailer deleted successfully"})
 }

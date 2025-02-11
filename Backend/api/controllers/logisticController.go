@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateFarmer(c *fiber.Ctx) error {
-	type FarmerRequest struct {
+func CreateLogistic(c *fiber.Ctx) error {
+	type LogisticRequest struct {
 		UserID       string  `json:"userid"`
 		CompanyName  string  `json:"company_name"`
 		FirstName    string  `json:"firstname"`
@@ -32,7 +32,7 @@ func CreateFarmer(c *fiber.Ctx) error {
 		LocationLink *string `json:"location_link"`
 	}
 
-	var req FarmerRequest
+	var req LogisticRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
@@ -42,24 +42,24 @@ func CreateFarmer(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User ID not found in users table"})
 	}
 
-	var existingFarmer models.Farmer
-	err := database.DB.Where("userid = ?", req.UserID).First(&existingFarmer).Error
+	var existingLogistic models.Logistic
+	err := database.DB.Where("userid = ?", req.UserID).First(&existingLogistic).Error
 	if err == nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is already registered as a farmer"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is already registered as a logistic provider"})
 	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 	}
 
-	if err := database.DB.Model(&models.User{}).Where("userid = ?", req.UserID).Update("role", "farmer").Error; err != nil {
+	if err := database.DB.Model(&models.User{}).Where("userid = ?", req.UserID).Update("role", "logistic").Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update user role"})
 	}
 
 	var sequence int64
-	if err := database.DB.Raw("SELECT nextval('farmer_id_seq')").Scan(&sequence).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate farmer ID"})
+	if err := database.DB.Raw("SELECT nextval('logisticsprovider_id_seq')").Scan(&sequence).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate logistic ID"})
 	}
 	yearPrefix := time.Now().Format("06")
-	farmerID := fmt.Sprintf("%s%05d", yearPrefix, sequence)
+	logisticID := fmt.Sprintf("%s%05d", yearPrefix, sequence)
 
 	fullAddress := strings.TrimSpace(req.Address)
 	if req.Address2 != nil && strings.TrimSpace(*req.Address2) != "" {
@@ -105,61 +105,55 @@ func CreateFarmer(c *fiber.Ctx) error {
 		locationLink = sql.NullString{String: strings.TrimSpace(*req.LocationLink), Valid: true}
 	}
 
-	farmer := models.Farmer{
-		FarmerID:     farmerID,
+	logistic := models.Logistic{
+		LogisticID:   logisticID,
 		UserID:       req.UserID,
-		FarmerName:   strings.TrimSpace(req.FirstName) + " " + strings.TrimSpace(req.LastName),
 		CompanyName:  companyName,
 		Address:      fullAddress,
 		City:         req.City,
 		Province:     province,
 		Country:      req.Country,
 		PostCode:     req.PostCode,
+		Email:        email.String,
 		Telephone:    fullPhone,
 		LineID:       lineID,
 		Facebook:     facebook,
 		LocationLink: locationLink,
 		CreatedOn:    time.Now(),
-		Email:        email.String,
 	}
 
-	if err := database.DB.Create(&farmer).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save farmer data"})
+	if err := database.DB.Create(&logistic).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save logistic provider data"})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer registered successfully", "farmer_id": farmer.FarmerID})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Logistic provider registered successfully", "logistic_id": logistic.LogisticID})
 }
 
-func GetFarmerByID(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-
-	var farmer models.Farmer
-	if err := database.DB.Where("farmerid = ?", farmerID).First(&farmer).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Farmer not found"})
+func GetLogisticByID(c *fiber.Ctx) error {
+	logisticID := c.Params("id")
+	var logistic models.Logistic
+	if err := database.DB.Where("logisticsid = ?", logisticID).First(&logistic).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Logistic provider not found"})
 	}
-
-	return c.JSON(farmer)
+	return c.JSON(logistic)
 }
 
-func UpdateFarmer(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-	var updates map[string]interface{}
-
-	if err := c.BodyParser(&updates); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data"})
+func UpdateLogistic(c *fiber.Ctx) error {
+	logisticID := c.Params("id")
+	updateData := make(map[string]interface{})
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
-
-	if err := database.DB.Model(&models.Farmer{}).Where("farmerid = ?", farmerID).Updates(updates).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update farmer data"})
+	if err := database.DB.Model(&models.Logistic{}).Where("logisticsid = ?", logisticID).Updates(updateData).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update logistic provider"})
 	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer updated successfully"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Logistic provider updated successfully"})
 }
 
-func DeleteFarmer(c *fiber.Ctx) error {
-	farmerID := c.Params("id")
-	if err := database.DB.Where("farmerid = ?", farmerID).Delete(&models.Farmer{}).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete farmer"})
+func DeleteLogistic(c *fiber.Ctx) error {
+	logisticID := c.Params("id")
+	if err := database.DB.Where("logisticsid = ?", logisticID).Delete(&models.Logistic{}).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete logistic provider"})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farmer deleted successfully"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Logistic provider deleted successfully"})
 }
